@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>covid API</title>
+    <style>
+       @import url(style.css);
+    </style>
+</head>
+
+<body>
+    <div class="card card-1">
+        <h1>Covid-19 Cases Data</h1><hr>
+        
+        <select id="country">
+            <option>Select your country</option>
+        </select>
+        <div id="showdata">
+        </div>
+    </div>
+</body>
+<script>
+
+    var covidData = fetch("https://covid-193.p.rapidapi.com/statistics", {
+        "method": "GET",
+        "headers": {
+            "x-rapidapi-key": "8d3a4b5605msh7ed4507cb4d370ap175f03jsnabdf59bd0dec",
+            "x-rapidapi-host": "covid-193.p.rapidapi.com"
+        }
+    })
+        .then(response => response.json())
+    var selectbox = document.querySelector('#country');
+    var showdata = document.querySelector('#showdata');
+    async function getData() {
+        let result = await covidData;
+        let data = result.response;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i]['continent'] = 'Asia') {
+                asiaData = data;
+                selectbox.insertAdjacentHTML("afterbegin", "<option value=" + i + ">" + asiaData[i].country + "</option>");
+            }
+        }
+    }
+    getData();
+
+    selectbox.addEventListener('change', () => {
+        var countryVal = document.querySelector("#country").value;
+        allData(countryVal);
+    });
+
+    async function allData(name) {
+        showdata.innerHTML = "";
+        let result = await covidData;
+        let data = result.response;
+        let mainSource = data[name];
+        console.log(mainSource);
+        showdata.insertAdjacentHTML("afterbegin", '<h3>Continent: ' + mainSource['continent'] + ' </h3><h3>Country: ' + mainSource['country'] + '</h3><h3>Date: ' + mainSource['day'] + '</h3><h3>Total Test: ' + mainSource['tests']['total'] + '</h3></h3><h3>New Cases: ' + mainSource['cases']['new'] + '</h3><h3>Total Cases: ' + mainSource['cases']['total'] + '</h3></h3><h3>Total Recoverd: ' + mainSource['cases']['recovered'] + '</h3></h3><h3>Active Cases: ' + mainSource['cases']['active'] + ' </h3><h3>Today Death: ' + mainSource['deaths']['new'] + '</h3><h3>Total Death: ' + mainSource['deaths']['total'] + '</h3>');
+    }
+</script>
+
+</html>
